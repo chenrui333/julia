@@ -2031,12 +2031,13 @@ let x = [1,2,3]
     @test (ccall(:jl_new_bits, Any, (Any,Ptr{Void},), (Int16,(Void,),Int8,(),Int,Void,Int), x)::Tuple)[[2,4,5,6,7]] === ((nothing,),(),2,nothing,3)
 end
 
+# TODO: figure out if/why this is causing codegen segfaults on Travis and AppVeyor?
 # sig 2 is SIGINT per the POSIX.1-1990 standard
-if Base.is_unix(OS_NAME)
-    ccall(:jl_exit_on_sigint, Void, (Cint,), 0)
-    @test_throws InterruptException ccall(:raise, Void, (Cint,), 2)
-    ccall(:jl_exit_on_sigint, Void, (Cint,), 1)
-end
+#if Base.is_unix(OS_NAME)
+#    ccall(:jl_exit_on_sigint, Void, (Cint,), 0)
+#    @test_throws InterruptException ccall(:raise, Void, (Cint,), 2)
+#    ccall(:jl_exit_on_sigint, Void, (Cint,), 1)
+#end
 
 # pull request #9534
 @test try; a,b,c = 1,2; catch ex; (ex::BoundsError).a === (1,2) && ex.i == 3; end
